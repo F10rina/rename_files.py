@@ -41,7 +41,7 @@ btn.grid(column=0, row=3)
 dir = filedialog.askdirectory()
 print(dir)
 
-
+qweqweqweqwe
 window.mainloop()
 
 

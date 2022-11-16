@@ -1,56 +1,47 @@
+
 from tkinter import *
-from tkinter import filedialog
-#from os import *
-#from os import path
 import os
+from os import path
+from tkinter import filedialog
 
-
-def file_extension(file):
+def st(file):
     return file.split('.')[-1]
 
 
 def rename_files():
-    global name
-    name = file_name.get()
     i = 1
-    list_files = sorted(os.listdir(folder), key=file_extension)
-    print(name, list_files)
-
+    dir = 'E:/foto'
+    name = 'name_foto'
+    list_files = sorted(os.listdir(dir), key=st)
+#    print(list_files)
     for file in list_files:
         ext = file.split('.')[-1]
-        new_name = f'{name}_{i}.{ext}'
-        if new_name in list_files:
-            i = i + 1
-        else:
-            os.rename(f'{folder}/{file}', f'{folder}/{name}_{i}.{ext}')
-            i = i + 1
+        os.rename(f'{dir}/{file}', f'{dir}/{name}_{i}.{ext}')
+
+#        print(os.listdir(dir))
+        i = i + 1
 
 
-def choose_folder():
-    dir = filedialog.askdirectory(initialdir='/')
-    folder_name.insert(0, dir)
-    global folder
-    folder = folder_name.get()
 
 window = Tk()
 window.geometry('400x250')
-folder_lbl = Label(window, text="Folder:")
-folder_lbl.grid(column=0, row=0)
-folder_name = Entry(window, width=30, borderwidth=3)
-folder_name.grid(column=1, row=0)
-btn_dir = Button(window, text="Choose folder", command=choose_folder)
-btn_dir.grid(column=2, row=0)
+lbl = Label(window, text="Путь")
+lbl.grid(column=0, row=0)
+txt = Entry(window,width=10)
+txt.grid(column=1, row=0)
 
-name_lbl = Label(window, text="New name:")
-name_lbl.grid(column=0, row=1)
-file_name = Entry(window,width=30, borderwidth=3)
-file_name.grid(column=1, row=1)
-file_name.insert(0, "fotochka")
-
-
-
+lbl1 = Label(window, text="Название")
+lbl1.grid(column=0, row=1)
+txt1 = Entry(window,width=10)
+txt1.grid(column=1, row=1)
 
 btn = Button(window, text="Переименовать", command=rename_files)
-btn.grid(column=1, row=3)
+btn.grid(column=0, row=3)
+
+dir = filedialog.askdirectory()
+print(dir)
+
 
 window.mainloop()
+
+

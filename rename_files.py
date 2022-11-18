@@ -1,53 +1,79 @@
 from tkinter import *
 from tkinter import filedialog
-#from os import *
-#from os import path
-import os
-
-
-def st(file):
+from os import *
+'''
+# functions for rename
+def file_extension(file):
     return file.split('.')[-1]
-
-
-def rename_files():
+'''
+def rename_folder():
+    
+    global name
+    name = file_new.get()
     i = 1
-    #dir = filedialog.askdirectory()
-    #name = dir.split('/')[-1]
-    list_files = sorted(os.listdir(folder), key=st)
-    print(name, list_files)
+    #folder_files = sorted(os.listdir(folder), key=file_extension)
+    print(name, file_res)
 '''
-    for file in list_files:
+    for file in folder_files:
         ext = file.split('.')[-1]
-        os.rename(f'{dir}/{file}', f'{dir}/{name}_{i}.{ext}')
-        i = i + 1
+        new_name = f'{name}_{i}.{ext}'
+        if new_name in folder_files:
+            i = i + 1
+        else:
+            os.rename(f'{folder}/{file}', f'{folder}/{name}_{i}.{ext}')
+            i = i + 1
 '''
 
+# function for folder
 def choose_folder():
+    pass
+'''
     dir = filedialog.askdirectory(initialdir='/')
     folder_name.insert(0, dir)
     global folder
     folder = folder_name.get()
+'''
+# function for files
+def choose_files():
     
-def choose_name():
-    global name
-    name = file_name.get()
+    global filenames
+    filenames = filedialog.askopenfilenames(initialdir='/', title="Select files", filetypes=(('JPG files', '*.jpg'), ('all files', '*.*'), ('PDF files', '*.pdf')))
+    # красота в окошке файлов.
+    file_res = ', '.join([i.split('/')[-1] for i in filenames])
+    files_lst.insert(0, file_res)
 
-
+    
+def rename_files():
+    pass
+    
 window = Tk()
 window.geometry('400x250')
+
+# Choose folder
 folder_lbl = Label(window, text="Folder:")
 folder_lbl.grid(column=0, row=0)
-folder_name = Entry(window, width=30, borderwidth=5)
+folder_name = Entry(window, width=30, borderwidth=3)
 folder_name.grid(column=1, row=0)
 btn_dir = Button(window, text="Choose folder", command=choose_folder)
 btn_dir.grid(column=2, row=0)
 
+# Choose files
+file_lbl = Label(window, text="Files:")
+file_lbl.grid(column=0, row=1)
+files_lst = Entry(window, width=30, borderwidth=3)
+files_lst.grid(column=1, row=1)
+btn_files = Button(window, text="Choose files", command=choose_files)
+btn_files.grid(column=2, row=1)
+
+# Enter new name
 name_lbl = Label(window, text="New name:")
-name_lbl.grid(column=0, row=1)
-file_name = Entry(window,width=30, borderwidth=5)
-file_name.grid(column=1, row=1)
-btn_name = Button(window, text="Enter", command=choose_name)
-btn_name.grid(column=2, row=1)
+name_lbl.grid(column=0, row=2)
+file_new = Entry(window,width=30, borderwidth=3)
+file_new.grid(column=1, row=2)
+file_new.insert(0, "fotochka")
+
+
+
 
 btn = Button(window, text="Переименовать", command=rename_files)
 btn.grid(column=1, row=3)

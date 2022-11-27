@@ -1,6 +1,6 @@
+import os
 from tkinter import *
 from tkinter import filedialog
-from os import *
 
 
 def rename_all():
@@ -13,11 +13,14 @@ def rename_all():
     for file in files_array:
         ext = file.split('.')[-1]
         r_name = f'{new_name}_{i}.{ext}'
-        if r_name in files_array:
-            i = i + 1
-        else:
-            os.rename(f'{folder}/{file}', f'{folder}/{r_name}')
-            i = i + 1
+        while True:
+            if r_name in os.listdir(folder):
+                i = i + 1
+                r_name = f'{new_name}_{i}.{ext}'
+            else:
+                os.rename(f'{folder}/{file}', f'{folder}/{r_name}')
+                i = i + 1
+                break
 
 
 # function for choosing folder
@@ -45,10 +48,10 @@ def choose_files():
 
 
 def button_state(value):
-    if value == 0:
+    if value == 'folder':
         btn_dir['state'] = NORMAL
         btn_files['state'] = DISABLED
-    if value == 1:
+    if value == 'files':
         btn_dir['state'] = DISABLED
         btn_files['state'] = NORMAL
 
@@ -60,10 +63,10 @@ window.geometry('400x250')
 # Choose folder
 #folder_lbl = Label(window, text="Folder:")
 #folder_lbl.grid(column=0, row=0)
-var = IntVar()
-var.set(0)
-radio_folder = Radiobutton(window, text='Folder', variable=var, value=0, command=lambda: button_state(var.get()))
-radio_folder.grid(column=0, row=0)
+var = StringVar()
+var.set('folder')
+radio_folder = Radiobutton(window, text='Folder', variable=var, value='folder', command=lambda: button_state(var.get()))
+radio_folder.grid(column=0, row=0, sticky=W)
 
 folder_name = Entry(window, width=30, borderwidth=3)
 folder_name.grid(column=1, row=0)
@@ -73,8 +76,8 @@ btn_dir.grid(column=2, row=0, sticky=W)
 # Choose files
 #file_lbl = Label(window, text="Files:")
 #file_lbl.grid(column=0, row=1)
-radio_files = Radiobutton(window, text='Files:', variable=var, value=1, command=lambda: button_state(var.get()))
-radio_files.grid(column=0, row=1)
+radio_files = Radiobutton(window, text='Files:', variable=var, value='files', command=lambda: button_state(var.get()))
+radio_files.grid(column=0, row=1, sticky=W)
 
 files_lst = Entry(window, width=30, borderwidth=3)
 files_lst.grid(column=1, row=1)

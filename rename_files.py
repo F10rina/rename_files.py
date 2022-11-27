@@ -76,3 +76,5 @@ btn = Button(window, text="Переименовать", command=rename_all)
 btn.grid(column=1, row=3)
 
 window.mainloop()
+
+

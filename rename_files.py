@@ -1,56 +1,95 @@
 from tkinter import *
 from tkinter import filedialog
-#from os import *
-#from os import path
-import os
+from os import *
 
 
-def file_extension(file):
-    return file.split('.')[-1]
+def rename_all():
 
-
-def rename_files():
-    global name
-    name = file_name.get()
+    new_name = filename_new.get()
     i = 1
-    list_files = sorted(os.listdir(folder), key=file_extension)
-    print(name, list_files)
+    #print(new_name, rb.get(), folder, files_array)
+    #print(new_name, rb.get(),folder, folder_files)
 
-    for file in list_files:
+    for file in files_array:
         ext = file.split('.')[-1]
-        new_name = f'{name}_{i}.{ext}'
-        if new_name in list_files:
+        r_name = f'{new_name}_{i}.{ext}'
+        if r_name in files_array:
             i = i + 1
         else:
-            os.rename(f'{folder}/{file}', f'{folder}/{name}_{i}.{ext}')
+            os.rename(f'{folder}/{file}', f'{folder}/{r_name}')
             i = i + 1
 
 
+# function for choosing folder
 def choose_folder():
+
+    global folder
+    global files_array
     dir = filedialog.askdirectory(initialdir='/')
     folder_name.insert(0, dir)
-    global folder
     folder = folder_name.get()
+    files_array = os.listdir(folder)
+
+
+# function for choosing files
+def choose_files():
+
+    global folder
+    global files_array
+    filenames = filedialog.askopenfilenames(initialdir='/', title="Select files", filetypes=(('JPG files', '*.jpg'), ('all files', '*.*'), ('PDF files', '*.pdf')))
+    folder = '/'.join(filenames[0].split('/')[:-1])
+    # красота в окошке файлов.
+    files_res = ', '.join([i.split('/')[-1] for i in filenames])
+    files_lst.insert(0, files_res)
+    files_array = files_res.split(', ')
+
+
+def button_state(value):
+    if value == 0:
+        btn_dir['state'] = NORMAL
+        btn_files['state'] = DISABLED
+    if value == 1:
+        btn_dir['state'] = DISABLED
+        btn_files['state'] = NORMAL
+
+
 
 window = Tk()
 window.geometry('400x250')
-folder_lbl = Label(window, text="Folder:")
-folder_lbl.grid(column=0, row=0)
+
+# Choose folder
+#folder_lbl = Label(window, text="Folder:")
+#folder_lbl.grid(column=0, row=0)
+var = IntVar()
+var.set(0)
+radio_folder = Radiobutton(window, text='Folder', variable=var, value=0, command=lambda: button_state(var.get()))
+radio_folder.grid(column=0, row=0)
+
 folder_name = Entry(window, width=30, borderwidth=3)
 folder_name.grid(column=1, row=0)
-btn_dir = Button(window, text="Choose folder", command=choose_folder)
-btn_dir.grid(column=2, row=0)
+btn_dir = Button(window, text="Choose folder", padx=15, command=choose_folder)
+btn_dir.grid(column=2, row=0, sticky=W)
 
-name_lbl = Label(window, text="New name:")
-name_lbl.grid(column=0, row=1)
-file_name = Entry(window,width=30, borderwidth=3)
-file_name.grid(column=1, row=1)
-file_name.insert(0, "fotochka")
+# Choose files
+#file_lbl = Label(window, text="Files:")
+#file_lbl.grid(column=0, row=1)
+radio_files = Radiobutton(window, text='Files:', variable=var, value=1, command=lambda: button_state(var.get()))
+radio_files.grid(column=0, row=1)
 
+files_lst = Entry(window, width=30, borderwidth=3)
+files_lst.grid(column=1, row=1)
+btn_files = Button(window, text="Choose files", padx=20, state=DISABLED, command=choose_files)
+btn_files.grid(column=2, row=1, sticky=W)
 
+# Enter new name
+newname_lbl = Label(window, text="New name:")
+newname_lbl.grid(column=0, row=2)
+filename_new = Entry(window,width=30, borderwidth=3)
+filename_new.grid(column=1, row=2)
+filename_new.insert(0, "fotochka")
 
-
-btn = Button(window, text="Переименовать", command=rename_files)
+# Rename button
+btn = Button(window, text="Переименовать", command=rename_all)
 btn.grid(column=1, row=3)
 
 window.mainloop()
